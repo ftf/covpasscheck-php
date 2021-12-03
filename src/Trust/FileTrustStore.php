@@ -7,8 +7,12 @@ use JsonException;
 
 class FileTrustStore extends TrustStore
 {
-    public function __construct(private string $filePath)
-    {}
+    private string $filePath;
+
+    public function __construct(string $filePath)
+    {
+        $this->filePath = $filePath;
+    }
 
     /**
      * @throws JsonException

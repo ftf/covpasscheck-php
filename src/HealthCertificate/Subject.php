@@ -4,9 +4,20 @@ namespace stwon\CovPassCheck\HealthCertificate;
 
 class Subject
 {
-    public function __construct(private string $firstName, private string $lastName, private string $dateOfBirth)
-    {
-        if (!preg_match('/^((19|20)\\d\\d(-\\d\\d){0,2})?$/', $this->dateOfBirth)) {
+    private string $firstName;
+    private string $lastName;
+    private string $dateOfBirth;
+
+    public function __construct(
+        string $firstName,
+        string $lastName,
+        string $dateOfBirth
+    ) {
+        $this->firstName   = $firstName;
+        $this->lastName    = $lastName;
+        $this->dateOfBirth = $dateOfBirth;
+        
+        if (! preg_match('/^((19|20)\\d\\d(-\\d\\d){0,2})?$/', $this->dateOfBirth)) {
             throw new \InvalidArgumentException('Invalid date of birth: ' . $this->dateOfBirth);
         }
     }

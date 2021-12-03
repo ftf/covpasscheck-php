@@ -13,6 +13,14 @@ class HealthCertificate
     public const TYPE_TEST = 0b010;
     public const TYPE_RECOVERY = 0b100;
 
+    private string $issuer;
+    private ?Carbon $issuedAt;
+    private ?Carbon $expiresAt;
+    private Subject $subject;
+    private array $vaccinationEntries;
+    private array $testEntries;
+    private array $recoveryEntries;
+
     /**
      * @param string $issuer
      * @param Carbon|null $issuedAt
@@ -23,15 +31,22 @@ class HealthCertificate
      * @param RecoveryEntry[] $recoveryEntries
      */
     private function __construct(
-        private string  $issuer,
-        private ?Carbon $issuedAt,
-        private ?Carbon $expiresAt,
-        private Subject $subject,
-        private array   $vaccinationEntries,
-        private array   $testEntries,
-        private array   $recoveryEntries,
+        string $issuer,
+        ?Carbon $issuedAt,
+        ?Carbon $expiresAt,
+        Subject $subject,
+        array $vaccinationEntries,
+        array $testEntries,
+        array $recoveryEntries
     )
     {
+        $this->issuer             = $issuer;
+        $this->issuedAt           = $issuedAt;
+        $this->expiresAt          = $expiresAt;
+        $this->subject            = $subject;
+        $this->vaccinationEntries = $vaccinationEntries;
+        $this->testEntries        = $testEntries;
+        $this->recoveryEntries    = $recoveryEntries;
     }
 
     public static function parseFromHcertV1(array $data): HealthCertificate
@@ -39,13 +54,13 @@ class HealthCertificate
         // CWT hcert = -260, claim key 1, see https://github.com/ehn-dcc-development/hcert-spec/blob/main/hcert_spec.md
         $certificateData = $data['-260']['1'];
 
-        if (!Semver::satisfies($certificateData['ver'], '^1.0.0')) {
+        if (! Semver::satisfies($certificateData['ver'], '^1.0.0')) {
             throw new \InvalidArgumentException('Invalid hcert version: ' . $certificateData['ver']);
         }
 
         $vaccinationEntries = [];
-        $testEntries = [];
-        $recoveryEntries = [];
+        $testEntries        = [];
+        $recoveryEntries    = [];
 
         if (array_key_exists('v', $certificateData)) {
             $vaccinationEntries[] = new VaccinationEntry(
@@ -60,7 +75,7 @@ class HealthCertificate
                 $certificateData['v'][0]['is'],
                 $certificateData['v'][0]['ci'],
             );
-        } else if (array_key_exists('t', $certificateData)) {
+        } elseif (array_key_exists('t', $certificateData)) {
             $testEntries[] = new TestEntry(
                 $certificateData['t'][0]['tg'],
                 $certificateData['t'][0]['tt'],
@@ -73,7 +88,7 @@ class HealthCertificate
                 $certificateData['t'][0]['is'],
                 $certificateData['t'][0]['ci'],
             );
-        } else if (array_key_exists('r', $certificateData)) {
+        } elseif (array_key_exists('r', $certificateData)) {
             $recoveryEntries[] = new RecoveryEntry(
                 $certificateData['r'][0]['tg'],
                 $certificateData['r'][0]['fr'],
@@ -173,7 +188,7 @@ class HealthCertificate
      */
     public function getType(bool $fullyVaccinatedOnly = false): int
     {
-        if ($this->vaccinationEntries && (!$fullyVaccinatedOnly || $this->vaccinationEntries[0]->isFullyVaccinated())) {
+        if ($this->vaccinationEntries && (! $fullyVaccinatedOnly || $this->vaccinationEntries[0]->isFullyVaccinated())) {
             return self::TYPE_VACCINATION;
         }
 
@@ -217,7 +232,7 @@ class HealthCertificate
 
         if ($types & self::TYPE_RECOVERY) {
             foreach ($this->recoveryEntries as $recoveryEntry) {
-                if ($recoveryEntry->getTarget() === $target && !$recoveryEntry->isExpired()) {
+                if ($recoveryEntry->getTarget() === $target && ! $recoveryEntry->isExpired()) {
                     return true;
                 }
             }
@@ -248,7 +263,7 @@ class HealthCertificate
 
         if ($types & self::TYPE_RECOVERY) {
             foreach ($this->recoveryEntries as $recoveryEntry) {
-                if ($recoveryEntry->getTarget() === $target && !$recoveryEntry->isExpired()) {
+                if ($recoveryEntry->getTarget() === $target && ! $recoveryEntry->isExpired()) {
                     $maxDate = $maxDate->max($recoveryEntry->getCertificateValidUntil());
                 }
             }

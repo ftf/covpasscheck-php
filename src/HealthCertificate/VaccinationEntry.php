@@ -7,24 +7,46 @@ use Exception;
 
 class VaccinationEntry
 {
+    private string $target;
+    private string $vaccineType;
+    private string $vaccineProduct;
+    private string $vaccineCompany;
+    private int $dosesReceived;
+    private int $dosesRequired;
+    private DateTime $vaccinationDate;
+    private string $locationCountryCode;
+    private string $certificateIssuer;
+    private string $certificateId;
+
     /**
      * @throws Exception
      */
     public function __construct(
-        private string          $target,
-        private string          $vaccineType,
-        private string          $vaccineProduct,
-        private string          $vaccineCompany,
-        private int             $dosesReceived,
-        private int             $dosesRequired,
-        private DateTime|string $vaccinationDate,
-        private string          $locationCountryCode,
-        private string          $certificateIssuer,
-        private string          $certificateId,
-    )
-    {
-        if (is_string($this->vaccinationDate)) {
-            $this->vaccinationDate = new DateTime($this->vaccinationDate);
+        string $target,
+        string $vaccineType,
+        string $vaccineProduct,
+        string $vaccineCompany,
+        int $dosesReceived,
+        int $dosesRequired,
+        $vaccinationDate,
+        string $locationCountryCode,
+        string $certificateIssuer,
+        string $certificateId
+    ) {
+        $this->target = $target;
+        $this->vaccineType = $vaccineType;
+        $this->vaccineProduct = $vaccineProduct;
+        $this->vaccineCompany = $vaccineCompany;
+        $this->dosesReceived = $dosesReceived;
+        $this->dosesRequired = $dosesRequired;
+        $this->locationCountryCode = $locationCountryCode;
+        $this->certificateIssuer = $certificateIssuer;
+        $this->certificateId = $certificateId;
+
+        if (is_string($vaccinationDate)) {
+            $this->vaccinationDate = new DateTime($vaccinationDate);
+        } else {
+            $this->vaccinationDate = $vaccinationDate;
         }
     }
 

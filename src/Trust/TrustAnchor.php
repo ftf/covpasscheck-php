@@ -6,16 +6,31 @@ use DateTime;
 
 class TrustAnchor implements TrustAnchorContract
 {
+    private string $certificateType;
+    private string $country;
+    private string $kid;
+    private string $certificate;
+    private string $signature;
+    private string $thumbprint;
+    private DateTime $timestamp;
+
     public function __construct(
-        private string   $certificateType,
-        private string   $country,
-        private string   $kid,
-        private string   $certificate,
-        private string   $signature,
-        private string   $thumbprint,
-        private DateTime $timestamp,
+        string $certificateType,
+        string $country,
+        string $kid,
+        string $certificate,
+        string $signature,
+        string $thumbprint,
+        DateTime $timestamp
     )
     {
+        $this->certificateType = $certificateType;
+        $this->country         = $country;
+        $this->kid             = $kid;
+        $this->certificate     = $certificate;
+        $this->signature       = $signature;
+        $this->thumbprint      = $thumbprint;
+        $this->timestamp       = $timestamp;
     }
 
     /**

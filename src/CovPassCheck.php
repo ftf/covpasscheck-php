@@ -29,9 +29,12 @@ class CovPassCheck
         ES256::ID => ES256::class,
         PS256::ID => PS256::class,
     ];
+    private TrustStore $trustStore;
 
-    public function __construct(private TrustStore $trustStore)
-    {}
+    public function __construct(TrustStore $trustStore)
+    {
+        $this->trustStore = $trustStore;
+    }
 
     private function makeCborDecoder(): Decoder
     {

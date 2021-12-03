@@ -10,24 +10,47 @@ class TestEntry
     public const TEST_RESULT_DETECTED = "260373001";
     public const TEST_RESULT_NOT_DETECTED = "260415000";
 
+    private string $target;
+    private string $testType;
+    private ?string $testName;
+    private ?string $testDeviceIdentifier;
+    private DateTime $testDate;
+    private string $testResult;
+    private ?string $testingFacility;
+    private string $locationCountryCode;
+    private string $certificateIssuer;
+    private string $certificateId;
+
     /**
      * @throws Exception
      */
     public function __construct(
-        private string          $target,
-        private string          $testType,
-        private ?string         $testName,
-        private ?string         $testDeviceIdentifier,
-        private DateTime|string $testDate,
-        private string          $testResult,
-        private ?string         $testingFacility,
-        private string          $locationCountryCode,
-        private string          $certificateIssuer,
-        private string          $certificateId,
+        string $target,
+        string $testType,
+        ?string $testName,
+        ?string $testDeviceIdentifier,
+        $testDate,
+        string $testResult,
+        ?string $testingFacility,
+        string $locationCountryCode,
+        string $certificateIssuer,
+        string $certificateId
     )
     {
-        if (is_string($this->testDate)) {
-            $this->testDate = new DateTime($this->testDate);
+        $this->target               = $target;
+        $this->testType             = $testType;
+        $this->testName             = $testName;
+        $this->testDeviceIdentifier = $testDeviceIdentifier;
+        $this->testResult           = $testResult;
+        $this->testingFacility      = $testingFacility;
+        $this->locationCountryCode  = $locationCountryCode;
+        $this->certificateIssuer    = $certificateIssuer;
+        $this->certificateId        = $certificateId;
+
+        if (is_string($testDate)) {
+            $this->testDate = new DateTime($testDate);
+        } else {
+            $this->testDate = $testDate;
         }
     }
 

@@ -8,29 +8,48 @@ use Exception;
 
 class RecoveryEntry
 {
+    private string $target;
+    private DateTime $testDate;
+    private string $locationCountryCode;
+    private DateTime $certificateValidFrom;
+    private DateTime $certificateValidUntil;
+    private string $certificateIssuer;
+    private string $certificateId;
+
     /**
      * @throws Exception
      */
     public function __construct(
-        private string           $target,
-        private DateTime|string  $testDate,
-        private string           $locationCountryCode,
-        private DateTime|string  $certificateValidFrom,
-        private DateTime|string  $certificateValidUntil,
-        private string           $certificateIssuer,
-        private string           $certificateId,
+        string $target,
+        $testDate,
+        string $locationCountryCode,
+        $certificateValidFrom,
+        $certificateValidUntil,
+        string $certificateIssuer,
+        string $certificateId
     )
     {
-        if (is_string($this->testDate)) {
-            $this->testDate = new DateTime($this->testDate);
+        $this->target = $target;
+        $this->locationCountryCode = $locationCountryCode;
+        $this->certificateIssuer = $certificateIssuer;
+        $this->certificateId = $certificateId;
+
+        if (is_string($testDate)) {
+            $this->testDate = new DateTime($testDate);
+        } else {
+            $this->testDate = $testDate;
         }
 
-        if (is_string($this->certificateValidFrom)) {
-            $this->certificateValidFrom = new DateTime($this->certificateValidFrom);
+        if (is_string($certificateValidFrom)) {
+            $this->certificateValidFrom = new DateTime($certificateValidFrom);
+        } else {
+            $this->certificateValidFrom = $certificateValidFrom;
         }
 
-        if (is_string($this->certificateValidUntil)) {
-            $this->certificateValidUntil = new DateTime($this->certificateValidUntil);
+        if (is_string($certificateValidUntil)) {
+            $this->certificateValidUntil = new DateTime($certificateValidUntil);
+        } else {
+            $this->certificateValidUntil = $certificateValidUntil;
         }
     }
 
@@ -61,7 +80,7 @@ class RecoveryEntry
     /**
      * @return DateTime
      */
-    public function getCertificateValidFrom(): DateTime|string
+    public function getCertificateValidFrom(): DateTime
     {
         return $this->certificateValidFrom;
     }
@@ -93,6 +112,7 @@ class RecoveryEntry
     public function isExpired(): bool
     {
         $now = Carbon::now();
+
         return $now->lessThan($this->certificateValidFrom) ||
             $now->greaterThan((new Carbon($this->certificateValidUntil))->endOfDay());
     }
