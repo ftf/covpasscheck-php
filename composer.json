@@ -23,7 +23,7 @@
     "mhauri/base45": "^0.1.1",
     "web-auth/cose-lib": "^3.3",
     "composer/semver": "^3.2",
-    "nesbot/carbon": "^2.54",
+    "nesbot/carbon": "^3.8",
     "ext-json": "*"
   },
   "repositories": [
